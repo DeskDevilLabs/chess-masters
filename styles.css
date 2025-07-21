@@ -238,15 +238,6 @@ a {
     text-align: center;
 }
 
-.social-link a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--gold);
-    font-weight: 600;
-    margin-top: 1rem;
-}
-
 /* Tournament System */
 .tournament-section {
     padding: 4rem 0;
