@@ -463,9 +463,9 @@ a {
 }
 
 .winner-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 80%;
+    height: auto;
+    
 }
 
 .participants-gallery {
@@ -483,8 +483,8 @@ a {
 }
 
 .participant-image img {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: auto;
     object-fit: cover;
 }
 
