@@ -483,8 +483,8 @@ a {
 }
 
 .participant-image img {
-    width: 80%;
-    height: auto;
+    width: auto;
+    height: 100%;
     object-fit: cover;
 }
 
