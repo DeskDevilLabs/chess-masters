@@ -329,7 +329,7 @@ a {
 .member-image img {
     width: 100%;
     height: auto;
-    object-fit: contain; /* Changed from 'cover' to 'contain' */
+    object-fit: contain;
     transition: var(--transition);
 }
 
@@ -389,11 +389,13 @@ a {
 }
 
 .gallery-item {
+    position: relative;
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: var(--transition);
     aspect-ratio: 4/3;
+    background-color: var(--dark-blue);
 }
 
 .gallery-item:hover {
@@ -405,7 +407,12 @@ a {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: var(--transition);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.gallery-item img.loaded {
+    opacity: 1;
 }
 
 .gallery-item:hover img {
@@ -465,7 +472,6 @@ a {
 .winner-image img {
     width: 80%;
     height: auto;
-    
 }
 
 .participants-gallery {
@@ -578,6 +584,34 @@ a {
     height: 3px;
     background-color: var(--white);
     transition: var(--transition);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    transition: opacity 0.3s ease;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--gold);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* Responsive Design */

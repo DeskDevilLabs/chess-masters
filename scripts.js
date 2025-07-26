@@ -36,35 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Lazy loading for images
-    if ('loading' in HTMLImageElement.prototype) {
-        // Native lazy loading is supported
-        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-        lazyImages.forEach(img => {
-            img.src = img.dataset.src;
-        });
-    } else {
-        // Fallback for browsers without native lazy loading
-        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-        
-        const lazyLoad = function() {
-            lazyImages.forEach(img => {
-                if (img.getBoundingClientRect().top <= window.innerHeight && img.getBoundingClientRect().bottom >= 0 && getComputedStyle(img).display !== 'none') {
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                }
-            });
-        };
-        
-        // Initial check
-        lazyLoad();
-        
-        // Listen to scroll events
-        document.addEventListener('scroll', lazyLoad);
-        window.addEventListener('resize', lazyLoad);
-        window.addEventListener('orientationchange', lazyLoad);
-    }
-    
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -93,4 +64,84 @@ document.addEventListener('DOMContentLoaded', function() {
             link.classList.add('active');
         }
     });
+
+    // Initialize image loading with spinners
+    initImageLoading();
 });
+
+// Image loading with spinners
+function initImageLoading() {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    galleryItems.forEach(item => {
+        const img = item.querySelector('img');
+        if (!img) return;
+        
+        // Create spinner container
+        const spinnerContainer = document.createElement('div');
+        spinnerContainer.className = 'loading-spinner';
+        
+        // Create spinner
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        spinnerContainer.appendChild(spinner);
+        
+        // Insert spinner before the image
+        item.insertBefore(spinnerContainer, img);
+        
+        // Set image to be invisible initially
+        img.style.opacity = '0';
+        
+        // Handle image loading based on loading attribute
+        if (img.loading === 'lazy') {
+            // For lazy-loaded images
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const lazyImage = entry.target;
+                        if (lazyImage.dataset.src) {
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.removeAttribute('data-src');
+                        }
+                        observer.unobserve(lazyImage);
+                    }
+                });
+            }, {
+                rootMargin: '200px' // Load images 200px before they come into view
+            });
+            
+            observer.observe(img);
+        } else {
+            // For eagerly loaded images
+            if (img.complete) {
+                imageLoaded(img, spinnerContainer);
+            }
+        }
+        
+        // Load event handler for all images
+        img.addEventListener('load', function() {
+            imageLoaded(img, spinnerContainer);
+        });
+        
+        // Error handling
+        img.addEventListener('error', function() {
+            spinnerContainer.remove();
+            img.alt = 'Failed to load image';
+            img.style.opacity = '1'; // Show error state
+        });
+    });
+}
+
+// Helper function to handle loaded image
+function imageLoaded(img, spinnerContainer) {
+    // Show image
+    img.style.opacity = '1';
+    
+    // Remove spinner after a small delay
+    setTimeout(() => {
+        spinnerContainer.style.opacity = '0';
+        setTimeout(() => {
+            spinnerContainer.remove();
+        }, 300);
+    }, 300);
+}
